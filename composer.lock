@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e7d0c518125f969f12389d2a66f304e",
+    "content-hash": "439574d632e0a2169ca2a4f95f475977",
     "packages": [
         {
             "name": "lcobucci/jwt",
@@ -71,8 +71,6 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {
-        "php": ">=5.4.0"
-    },
+    "platform": [],
     "platform-dev": []
 }
