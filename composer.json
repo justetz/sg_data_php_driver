@@ -1,0 +1,14 @@
+{
+  "name": "justetz/sg_data_php_driver",
+  "description": "A PHP driver for using the justetz/sg_data API.",
+  "keywords": ["php", "api", "student", "government", "rpi"],
+  "homepage": "https://data.sg.rpi.edu/",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {"name": "Justin Etzine", "homepage": "https://justetz.com"}
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  }
+}
