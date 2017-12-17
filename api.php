@@ -1,6 +1,6 @@
 <?php
 
-require_once 'vendor/autoload.php';
+require_once realpath($_SERVER["DOCUMENT_ROOT"]) . '/vendor/autoload.php';
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
@@ -31,6 +31,7 @@ abstract class APIModel {
     protected static function executeAPIGet($query) {
         $ch = curl_init(static::getUrl($query));
 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . static::createToken()));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,true);
 
@@ -95,14 +96,14 @@ abstract class APIModel {
         $tokenBuilder->setIssuedAt(time());
 
         // Configures the time that the token can be used (nbf claim)
-        $tokenBuilder->setNotBefore(time() + 60);
+        $tokenBuilder->setNotBefore(time());
 
         // Configures the expiration time of the token (exp claim)
-        $tokenBuilder->setExpiration(time() + 3600);
+        $tokenBuilder->setExpiration(time() + 60);
 
         // Configures a new claim, called "uid"
-        if(!!getenv("RCS_ID")) {
-            $tokenBuilder->set('rcsId', getenv("RCS_ID"));
+        if(defined('RCS_ID')) {
+            $tokenBuilder->set('rcsId', RCS_ID);
         }
 
         // creates a signature using the AUTH_SECRET environment variable
@@ -110,7 +111,7 @@ abstract class APIModel {
             $tokenBuilder->sign((new Sha256()), getenv("AUTH_SECRET"));
         }
 
-        $tokenBuilder->getToken(); // Retrieves the generated token
+        return $tokenBuilder->getToken(); // Retrieves the generated token
     }
 
     public static function read($parameters=null) {
