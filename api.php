@@ -1,5 +1,10 @@
 <?php
 
+require_once 'vendor/autoload.php';
+
+use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+
 if(!getenv("API_URL")) {
     $API_BASE = "https://data.sg.rpi.edu/";
 } else {
@@ -45,15 +50,14 @@ abstract class APIModel {
         }
     }
 
-    protected static function executeAPICall($method, $data, $id = null) {
+    protected static function executeAPICall($method, $data, $id=null) {
         if(!isset($id)) {
             $id = '';
         }
 
         $ch = curl_init(static::getUrl() . "/$id");
 
-        //hash (string $algo , string $data) - use this to generate a hashed set of a secret key and the username
-
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . static::createToken()));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -76,6 +80,37 @@ abstract class APIModel {
             "message" => "Required field(s) missing",
             "errors" => $errors,
         ];
+    }
+
+    protected static function createToken() {
+        $tokenBuilder = new Builder();
+
+        // Configures the issuer (iss claim)
+        $tokenBuilder->setIssuer((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/");
+
+        // Configures the audience (aud claim)
+        $tokenBuilder->setAudience(API_BASE);
+
+        // Configures the time that the token was issue (iat claim)
+        $tokenBuilder->setIssuedAt(time());
+
+        // Configures the time that the token can be used (nbf claim)
+        $tokenBuilder->setNotBefore(time() + 60);
+
+        // Configures the expiration time of the token (exp claim)
+        $tokenBuilder->setExpiration(time() + 3600);
+
+        // Configures a new claim, called "uid"
+        if(!!getenv("RCS_ID")) {
+            $tokenBuilder->set('rcsId', getenv("RCS_ID"));
+        }
+
+        // creates a signature using the AUTH_SECRET environment variable
+        if(!!getenv("AUTH_SECRET")) {
+            $tokenBuilder->sign((new Sha256()), getenv("AUTH_SECRET"));
+        }
+
+        $tokenBuilder->getToken(); // Retrieves the generated token
     }
 
     public static function read($parameters=null) {
