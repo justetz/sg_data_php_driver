@@ -10,7 +10,6 @@
     {"name": "Justin Etzine", "homepage": "https://justetz.com"}
   ],
   "require": {
-    "php": ">=5.4.0",
-    "justetz/sg_data_php_driver": "*"
+    "php": ">=5.4.0"
   }
 }
