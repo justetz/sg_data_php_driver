@@ -5,7 +5,7 @@
   "homepage": "https://data.sg.rpi.edu/",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "authors": [
     {"name": "Justin Etzine", "homepage": "https://justetz.com"}
   ],
@@ -13,6 +13,6 @@
     "files": ["api.php"]
   },
   "require": {
-    "php": ">=5.4.0"
+    "php": ">=5.6.0"
   }
 }
