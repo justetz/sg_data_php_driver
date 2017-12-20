@@ -371,3 +371,7 @@ class Subbodies extends APIModel {
 class Bylaws extends APIModel {
     const ENDPOINT = 'bylaws';
 }
+
+class Updates extends APIModel {
+    const ENDPOINT = 'updates';
+}
